@@ -1,0 +1,172 @@
+enter = """
+********************************************************
+*   Welcome To   Python Lİbrary Management System    *
+********************************************************
+"""
+
+students={}
+books= {}
+with open("students.txt",encoding="utf-8") as f:
+    for line in  f.readlines():
+        students[line.split()[0]]=line.split()[1]+" "+line.split()[2]
+with open("books.txt", encoding="utf-8") as f:
+    for line in  f.readlines():
+        line=line.rstrip()
+        books[line.split(",")[0]]=[line.split(",")[1], line.split(",")[2],line.split(",")[3]]
+
+def list_of_book():
+    print("****List Of Books****")
+    for i in books.values():
+        print(i[0])
+    print("****************")
+def check_out_books():
+    print("****Check Out Books****")
+    for i in books.values():
+        if i[2]=="T":
+            print(i[0])
+    print("****************")
+def add_book():
+
+    ISBN=input("Please enter the ISBN number of the book you want to add: ")
+    bookName=input("Please enter the name of the book you want to add: ")
+    authorName=input("Please enter the name of the author of the book you want to add: ")
+    if ISBN not in  list(books.keys()):
+        with open("books.txt","a",encoding="utf-8") as f:
+            f.write(ISBN  + "," +bookName +"," + authorName +"," +"F")
+    else:
+        print("This book is already available in library. Please check book ISBN")
+
+def search_book_by_ISBN():
+    bookISBN = input("Please enter the ISBN number of the book you want to search: ")
+    if  bookISBN in list(books.keys()):
+        book=books[bookISBN]
+        print(book[0])
+    else:
+        print("There are no books with this ISBN number in the library.Please check the number you entered.")
+
+def search_book_by_name():
+    bookName = input("Enter Book Name : ")
+
+    for i in books.values():
+        if bookName in i[0]:
+            print(i[0])
+
+    else:
+        print("There are no books with this ISBN number in the library.Please check the number you entered")
+
+def check_out_book_student():
+    checkout_books = {}
+    id = input("Please enter the ID number of the student: ")
+    ısbn = input("Please enter the ISBN number of the book: ")
+    if id not in students.keys() and  ısbn not in books.keys():
+        print("You entered a number that isn't in library.Please check the number you entered")
+    else:
+        book = books[ısbn]
+
+        for i in students.keys():
+            checkout_books[i] = [students[i]]
+
+
+        if book[2] == "T":
+                print("This book is not available")
+        else:
+                print("This book has been successfully received")
+                book[2] = "T"
+                books_values = list(books.values())
+                books_keys = list(books.keys())
+                checkout_books[id].append(book[0])
+
+                with open("books.txt", "w", encoding="utf-8") as f:
+                    for i in range(len(books_keys)):
+                        ısbn = "".join(books_keys[i])
+                        author = ",".join(books_values[i])
+                        f.writelines(ısbn + "," + author + "\n")
+
+                with open("students.txt", "w", encoding="utf-8") as f:
+                    for j in checkout_books:
+                        f.write(j + " " + checkout_books[j][0])
+                        for i in range(1, len(checkout_books[j])):
+                            f.write("-" + checkout_books[j][i] )
+                        f.write("\n")
+
+
+def list_students():
+    for i in students.values():
+        if "," in i:
+            print(i.split(",")[0]+"\n"+i.split(",")[1])
+        else:
+            print(i)
+
+
+def top3books():
+    books2=["Iz","Eylül","Intibah","Kukla","Piraye","Serenad","Yabancı","ÇalıKuşu","Sızı","Korku"]
+    word_count={}
+    for ele in students.values():
+        if "-" in ele:
+            a=ele.split("-")[1]
+            if  a in books2:
+                word_count[a]=word_count[a]+1
+            else:
+                word_count[a]=0
+    values=list(word_count.values())
+
+
+
+def top3students():
+    len1=0
+    for i in students.values():
+        if "-" in i:
+            a=i.split("-")
+            if len(a) > len1:
+                len1 = len(a)
+                print(a[0])
+
+while True:
+    print(enter)
+    print("Select your option")
+    print("Press 1 To List of books ")
+    print("Press 2 To Check Out Books")
+    print("Press 3 To Add Books")
+    print("Press 4 To Search a book by ISBN number ")
+    print("Press 5 To Search a book by name")
+    print("Press 6 To Check out a book to a student")
+    print("Press 7 To List all the students")
+    print("Press 8 To List top 3 most checked out books")
+    print("Press 9 To List top 3 students with the highest checked out numbers  ")
+    print("Press 10 To exit")
+    key_press= input("Press Key: ")
+    if key_press not in ["1","2","3","4","5","6","7","8","9","10"]:
+        print(  "Please press the correct number")
+
+    elif key_press=="1":
+       print("\nCurrent Selection : List of books \n")
+       list_of_book()
+
+    elif key_press=="2":
+        print("\nCurrent Selection : Check Out Books\n")
+        check_out_books()
+    elif key_press== "3":
+        print("\nCurrent Selection : Add Books\n")
+        add_book()
+    elif key_press== "4":
+        print("\nCurrent Selection : Search a book by ISBN number\n")
+        search_book_by_ISBN()
+    elif key_press== "5":
+        print("\nCurrent Selection : Search a book by name\n")
+        search_book_by_name()
+    elif key_press== "6":
+        print("\nCurrent Selection : Check out a book to a student\n")
+        check_out_book_student()
+    elif key_press== "7":
+        print("\nCurrent Selection : List all the students\n")
+        list_students()
+    elif key_press == "8":
+        print("\nCurrent Selection : List top 3 most checked out books\n")
+        top3books()
+    elif key_press == "9":
+        print("\nCurrent Selection : List top 3 students with the highest checked out numbers\n")
+        top3students()
+    elif key_press=="10":
+          break
+    else:
+       continue
